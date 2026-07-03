@@ -1,0 +1,77 @@
+import connectToDB from "@/lib/db";
+import UserModel from "@/models/User";
+import bcrypt from "bcryptjs";
+import { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+
+export const authOptions: NextAuthOptions = {
+    providers: [
+        CredentialsProvider({
+            name: "Credentials",
+            credentials: {
+                identifier: { label: "Email", type: "text", placeholder: "Email" },
+                password: { label: "Password", type: "password" }
+            },
+            async authorize(credentials, req): Promise<any> {
+
+                await connectToDB();
+
+                try {
+                    const user = await UserModel.findOne({
+                        $or: [
+                            { email: credentials.identifier },
+                            { username: credentials.identifier }
+                        ]
+                    })
+
+                    if (!user) {
+                        throw new Error('User not found');
+                    }
+
+                    if (!user.isVerified) {
+                        throw new Error('Please verify your account');
+                    }
+
+                    const isCorrectPass = await bcrypt.compare(credentials.password, user.password)
+
+                    if (isCorrectPass) {
+                        return user
+                    } else {
+                        throw new Error('Incorret credentials')
+                    }
+                } catch (error: any) {
+                    throw new Error(error)
+                }
+            },
+
+        })
+    ],
+    pages: {
+        signIn: '/signin',
+
+    },
+    session: {
+        strategy: 'jwt'
+    },
+    callbacks: {
+        async jwt({ token, user, account, profile }) {
+            if (user) {
+                token._id = user._id?.toString();
+                token.isVerified = user.isVerified;
+                token.isAcceptingMessages = user.isAcceptingMessages;
+                token.username = user.username
+            }
+            return token
+        },
+        async session({ session, user, token }) {
+            if (session) {
+                session._id = user._id?.toString();
+                session.isVerified = user.isVerified;
+                session.isAcceptingMessages = user.isAcceptingMessages;
+                session.username = user.username
+            }
+            return session
+        }
+    },
+    secret: process.env.NEXT_AUTH_SECRET
+}
