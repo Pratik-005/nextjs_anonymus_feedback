@@ -1,12 +1,13 @@
 import connectToDB from "@/lib/db";
 import UserModel from "@/models/User";
 import bcrypt from "bcryptjs";
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextAuthConfig } from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 
-export const authOptions: NextAuthOptions = {
+
+export const authOptions: NextAuthConfig = {
     providers: [
-        CredentialsProvider({
+        Credentials({
             name: "Credentials",
             credentials: {
                 identifier: { label: "Email", type: "text", placeholder: "Email" },
@@ -32,7 +33,7 @@ export const authOptions: NextAuthOptions = {
                         throw new Error('Please verify your account');
                     }
 
-                    const isCorrectPass = await bcrypt.compare(credentials.password, user.password)
+                    const isCorrectPass = bcrypt.compare(credentials.password, user.password)
 
                     if (isCorrectPass) {
                         return user
