@@ -10,7 +10,6 @@ declare module "next-auth" {
 
     interface Session {
         user: {
-            id?: string | null;
             _id?: string;
             isVerified?: boolean;
             username?: string;

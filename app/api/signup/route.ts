@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
         const existingUser = await UserModel.findOne({ email });
 
         if (existingUser) {
+
             if (existingUser.isVerified) {
                 return NextResponse.json({
                     success: false,
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
             } else {
                 existingUser.password = hashedPassword;
                 existingUser.verifyCode = code;
-                existingUser.verifyCodeExpiry = new Date(Date.now() + 3600000);
+                existingUser.verifyCodeExpiry = expiry;
                 await existingUser.save();
             }
         } else {

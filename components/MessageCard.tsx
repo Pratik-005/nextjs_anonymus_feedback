@@ -4,7 +4,8 @@ import axios, { AxiosError } from 'axios';
 import dayjs from 'dayjs';
 import { X } from 'lucide-react';
 import { toast } from "sonner";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -49,9 +50,9 @@ export function MessageCard({ message, onMessageDelete, messageId }: MessageCard
                     <CardTitle>{message.content}</CardTitle>
                     <AlertDialog>
                         <AlertDialogTrigger>
-                            <Button variant='destructive'>
-                                <X className="w-5 h-5" />
-                            </Button>
+
+                            <X className="w-5 h-5" />
+
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>

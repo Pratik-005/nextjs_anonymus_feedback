@@ -5,6 +5,7 @@ import { User } from "next-auth";
 import UserModel from "@/models/User";
 
 export async function POST(req: NextRequest) {
+
     await connectToDB();
     const { isAcceptingMessages } = await req.json();
 
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
             }
         })
 
-        return NextResponse.json({ message: 'Status updated successfully', success: false }, { status: 200 });
+        return NextResponse.json({ message: 'Status updated successfully', success: true }, { status: 200 });
 
     } catch (error) {
         return NextResponse.json({ message: 'Unable to update user status to update messages !', success: false }, { status: 500 });
@@ -51,7 +52,7 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({
             message: 'Status fetched successfully',
             isAcceptingMessages: dbuser.isAcceptingMessages,
-            success: false
+            success: true
         }, { status: 200 });
 
     } catch (error) {

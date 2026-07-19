@@ -4,9 +4,10 @@ import { auth } from "@/auth";
 import { User } from "next-auth";
 import UserModel from "@/models/User";
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
 
-    const msgId = params.id;
+    const { id: msgId } = await params;
+
     const session = await auth();
 
     if (!session || !session.user) {
@@ -21,7 +22,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
             $pull: {
                 messages: { _id: msgId }
             }
-        })
+        });
 
         return NextResponse.json({ message: 'Message deleted successfully', success: false }, { status: 200 });
 

@@ -9,12 +9,13 @@ export const config = {
         "/",
         "/verify/:path*",
     ],
-};
+}
 
 export async function proxy(request: NextRequest) {
+    
     const token = await getToken({
         req: request,
-        secret: process.env.AUTH_SECRET, // or NEXTAUTH_SECRET if that's what you're using
+        secret: process.env.NEXT_AUTH_SECRET, 
     });
 
     const { pathname } = request.nextUrl;

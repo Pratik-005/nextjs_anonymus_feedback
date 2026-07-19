@@ -19,12 +19,16 @@ export async function GET(req: NextRequest) {
         const result = usernameQuerySchema.safeParse(query);
 
         if (!result.success) {
-            const errors = result.error.format().username?._errors || [];
-            return NextResponse.json({
-                message: errors[0],
-                success: false
-            }, { status: 500 });
+            const errors = result.error.issues;
+            return NextResponse.json(
+                {
+                    message: errors[0].message ?? "Invalid input",
+                    success: false,
+                },
+                { status: 400 }
+            );
         }
+
         const { username } = result.data;
 
         const user = await UserModel.findOne({

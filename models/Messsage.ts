@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 export interface Message extends Document {
+    _id?: string;
     content: string;
     createdAt: Date;
 }
@@ -18,6 +19,6 @@ export const MessageSchema: Schema<Message> = new Schema({
     }
 });
 
-const MessageModel = (mongoose.models.messages as mongoose.Model<Message>) || mongoose.model<Message>('Message', MessageSchema);
+const MessageModel = (mongoose.models.Message as mongoose.Model<Message>) || mongoose.model<Message>('Message', MessageSchema);
 
 export default MessageModel;

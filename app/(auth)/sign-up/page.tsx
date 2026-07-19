@@ -18,11 +18,11 @@ import { useDebounceValue } from 'usehooks-ts';
 import * as z from 'zod';
 
 export default function SignUpForm() {
+
     const [usernameMessage, setUsernameMessage] = useState('');
     const [isCheckingUsername, setIsCheckingUsername] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // This handles both the value state and the debounce timer in one line
     const [debouncedUsername, setDebouncedUsername] = useDebounceValue('', 300);
     const router = useRouter();
 
@@ -42,7 +42,7 @@ export default function SignUpForm() {
                 setUsernameMessage('');
                 try {
                     const response = await axios.get<ApiResponse>(
-                        `/api/check-username-unique?username=${debouncedUsername}`
+                        `/api/check-username?username=${debouncedUsername}`
                     );
                     setUsernameMessage(response.data.message);
                 } catch (error) {
@@ -61,8 +61,7 @@ export default function SignUpForm() {
     const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
         setIsSubmitting(true);
         try {
-            const response = await axios.post<ApiResponse>('/api/sign-up', data);
-
+            const response = await axios.post<ApiResponse>('/api/signup', data);
             toast(response.data.message);
             router.replace(`/verify/${data.username}`);
         } catch (error) {

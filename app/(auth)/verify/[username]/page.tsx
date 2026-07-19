@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import * as z from 'zod';
 
 const VerifyPage = () => {
+
     const router = useRouter();
     const { username } = useParams<{ username: string }>();
 

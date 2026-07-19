@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
-
 export const authOptions: NextAuthConfig = {
     providers: [
         Credentials({
@@ -33,7 +32,7 @@ export const authOptions: NextAuthConfig = {
                         throw new Error('Please verify your account');
                     }
 
-                    const isCorrectPass = bcrypt.compare(credentials.password, user.password)
+                    const isCorrectPass = await bcrypt.compare(credentials.password, user.password)
 
                     if (isCorrectPass) {
                         return user
@@ -66,10 +65,10 @@ export const authOptions: NextAuthConfig = {
         },
         async session({ session, user, token }) {
             if (session) {
-                session._id = user._id?.toString();
-                session.isVerified = user.isVerified;
-                session.isAcceptingMessages = user.isAcceptingMessages;
-                session.username = user.username
+                session.user._id = token._id as string;
+                session.user.isVerified = token.isVerified as boolean;
+                session.user.isAcceptingMessages = token.isAcceptingMessages as boolean;
+                session.user.username = token.username as string;
             }
             return session
         }
